@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="513" height="289" viewBox="0 0 513 289">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+      }
+
+      .cls-2 {
+        clip-path: url(#clip-Data_Saved);
+      }
+
+      .cls-3 {
+        clip-path: url(#clip-path);
+      }
+
+      .cls-4 {
+        opacity: 0.8;
+      }
+
+      .cls-5 {
+        fill: #fff;
+        font-size: 33px;
+        font-family: SourceSansPro-Regular, Source Sans Pro;
+        letter-spacing: 0.15em;
+      }
+
+      .cls-6, .cls-7 {
+        fill: #66db00;
+      }
+
+      .cls-7 {
+        fill-rule: evenodd;
+      }
+    </style>
+    <clipPath id="clip-path">
+      <rect id="Rectangle_154" data-name="Rectangle 154" class="cls-1" width="515.15" height="293.221"/>
+    </clipPath>
+    <clipPath id="clip-Data_Saved">
+      <rect width="513" height="289"/>
+    </clipPath>
+  </defs>
+  <g id="Data_Saved" data-name="Data Saved" class="cls-2">
+    <g id="Group_130" data-name="Group 130">
+      <g id="Group_129" data-name="Group 129" class="cls-3">
+        <g id="Group_128" data-name="Group 128">
+          <g id="Group_127" data-name="Group 127" class="cls-3">
+            <g id="Group_126" data-name="Group 126" class="cls-4">
+              <g id="Group_125" data-name="Group 125">
+                <g id="Group_124" data-name="Group 124" class="cls-3">
+                  <rect id="Rectangle_149" data-name="Rectangle 149" width="515.15" height="293.221"/>
+                </g>
+              </g>
+            </g>
+          </g>
+        </g>
+        <text id="Data_Saved_" data-name="Data
+Saved !" class="cls-5" transform="translate(256.806 86.889)"><tspan x="-39.204" y="0">Data</tspan><tspan x="-65.026" y="39">Saved !</tspan></text>
+      </g>
+    </g>
+    <g id="check-o" transform="translate(223.864 150.864)">
+      <path id="Path_170" data-name="Path 170" class="cls-6" d="M21.009,35.764,9,23.751l4-4,8.008,8L37.02,11.74l4.006,4.006L21.011,35.758Z" transform="translate(6.653 9.083)"/>
+      <path id="Path_171" data-name="Path 171" class="cls-7" d="M1.5,32.636A31.136,31.136,0,1,1,32.636,63.771,31.135,31.135,0,0,1,1.5,32.636ZM32.636,58.11A25.475,25.475,0,1,1,58.11,32.636,25.475,25.475,0,0,1,32.636,58.11Z"/>
+    </g>
+  </g>
+</svg>
