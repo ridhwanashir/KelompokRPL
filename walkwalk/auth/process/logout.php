@@ -1,6 +1,5 @@
 <?php
 
-session_start();
 session_destroy();
 
-header("location: app?page=home");
+jsRedirect("app?page=home");

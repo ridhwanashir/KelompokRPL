@@ -1,7 +1,13 @@
 <?php
 
-$r = $db->registerUser($_POST["name"],$_POST["email"],$_POST["password"],$_POST["address"],$_POST["phone"]);
-$res = $r->get_result();
-$_SESSION["id"] = $r->insert_id;
+$user = new User($conn);
+$user->name = $_POST["name"];
+$user->email = $_POST["email"];
+$user->password = $_POST["password"];
+$user->address = $_POST["address"];
+$user->phone = $_POST["phone"];
+$user->registerUser();
+
+$_SESSION["id"] = $user->id;
 $_SESSION["role"] = "user";
 header("Location: ?page=login");

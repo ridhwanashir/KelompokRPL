@@ -32,7 +32,7 @@
             <form class="d-flex">
                 <div class="dropdown">
                     <button class="btn btn-success bg-gradient dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                        <?php echo $user["name"]; ?>
+                        <?php echo $user->name; ?>
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                         <li><a class="dropdown-item" href="?page=editprofil">Edit Profil</a></li>

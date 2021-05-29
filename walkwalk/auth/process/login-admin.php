@@ -1,11 +1,16 @@
 <?php
 
-$r = $db->loginAdmin($_POST["username"], $_POST["password"]);
-$r = $r->get_result();
-if ($r->num_rows > 0) {
-    $_SESSION["id"] = $r->fetch_assoc()["id"];
+$admin = new Admin($conn);
+$admin->username = $_POST["username"];
+$admin->password = $_POST["password"];
+$r = $admin->loginAdmin();
+
+if ($r["status"] == "success")
+{
+    $_SESSION["id"] = $admin->id;
     $_SESSION["role"] = "admin";
     header("Location: ?page=home");
-} else {
-    header("Location: ?page=login-admin&status=0");
+    exit;
 }
+
+header("Location: ?page=login-admin&status=0");

@@ -1,105 +1,222 @@
 <!DOCTYPE html>
 <html>
+<!-- Pendahuluan : Walkwalk adalah sebuah website traveling, dengan tujuan utama memesan tiket wisata dan penginapan. rujukan DPPL : https://drive.google.com/drive/folders/13Lcfms3R0jNJ-J0TQPAyIMVvjtffnA6N?usp=sharing
 
+file app.php berisi interface untuk setiap halaman  -->
+<!-- menginisiasi head dengan title dan stylesheet -->
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link href="res/css/bootstrap.min.css" rel="stylesheet">
+    <title>WalkWalk</title>
 </head>
 
 <body>
     <?php
-    session_start();
+    session_start(); // membuat sesi sesuai role
 
-    require "connection.php";
+    require "connection.php"; 
     require "classes.php";
-
-    $db = new DB($conn);
+    require "functions.php";
 
     $user = null;
     $admin = null;
 
-    // Get Specific Navar by Session Role
-    if (isset($_SESSION["id"])) {
-        switch ($_SESSION["role"]) {
-            case "user";
-                $user = $db->getUserByID($_SESSION["id"]);
-                require "navbar/navbar-user.php";
+    $navbarSwitch = [ // menampilkan navbar sesuai role
+        "user"=>"navbar/navbar-user.php",
+        "admin"=>"navbar/navbar-admin.php"
+    ];
+
+    $homeSwitch = [ // menampilkan homepage sesuai role
+        "user"=>"home/page/home-user.php",
+        "admin"=>"home/page/home-user.php"
+    ];
+
+
+    // Ambil Role 
+    if (isLoggedIn())
+    {
+        switch ($_SESSION["role"])
+        {
+            case "user":
+                $user = new User($conn);
+                $user->getDataByID($_SESSION["id"]);
                 break;
-            case "admin";
-                $user = $db->getAdminByID($_SESSION["id"]);
-                require "navbar/navbar-admin.php";
+            case "admin":
+                $admin = new Admin($conn);
+                $admin->getDataByID($_SESSION["id"]);
                 break;
         }
-    }else{
+
+        require $navbarSwitch[$_SESSION["role"]];
+    }
+    else
+    {
         require "navbar/navbar.php";
     }
 
-    // Get Specific Page by $_GET page
+
+    // Mengambil Specific Interface Page sesuai request $_GET 
     if (isset($_GET["page"])) {
         switch ($_GET["page"]) {
 
             case "home":
-                // Get Specific Home by Session Role
-                if (isset($_SESSION["id"])) {
-                    switch ($_SESSION["role"]) {
-                        case "user";
-                            require "home/page/home-user.php";
-                            break;
-                        case "admin";
-                            require "home/page/home-user.php";
-                            break;
-                    }
+                // Mengambil Specific Home sesuai Session Role
+                if (isLoggedIn()) {
+                    require $homeSwitch[$_SESSION["role"]];
                     break;
                 }
                 require "home/page/home.php";
-                break;
+            break;
 
             case "login":
-                if (isset($_SESSION["id"])) {
-                    header("location: ?page=home");
-                }
+                gotoHomeIfLoggedIn(); // mengarahkan ke page home jika sudah login
                 require "auth/page/login.php";
-                break;
+            break;
 
             case "login-admin":
-                if (isset($_SESSION["id"])) {
-                    header("location: ?page=home");
-                }
+                gotoHomeIfLoggedIn();
                 require "auth/page/login-admin.php";
-                break;
+            break;
 
             case "register":
-                if (isset($_SESSION["id"])) {
-                    header("location: ?page=home");
-                }
+                gotoHomeIfLoggedIn();
                 require "auth/page/register.php";
-                break;
+            break;
+
+            case "search":
+                require "user/page/search.php";
+            break;
 
             case "editprofil":
+                gotoLoginIfNotLoggedIn(); // mengarahkan ke page login jika belum login
                 require "user/page/editprofil.php";
+            break;
+
+            case "beli-tiket":
+                gotoLoginIfNotLoggedIn();
+                require "user/page/beli-tiket.php";
+            break;
+
+            case "pesan-penginapan":
+                gotoLoginIfNotLoggedIn();
+                require "user/page/pesan-penginapan.php";
+            break;
+
+            case "kelola-wisata":
+                gotoLoginIfNotLoggedIn();
+                switch ($_GET["a1"])
+                {
+                    case "data-wisata":
+                        require "admin/page/kelola-wisata/data-wisata.php"; // membutuhkan akses page admin
+                    break;
+
+                    case "tambah-wisata":
+                        require "admin/page/kelola-wisata/tambah-wisata.php";
+                    break;
+
+                    case "edit-wisata":
+                        require "admin/page/kelola-wisata/edit-wisata.php";
+                    break;
+                }
                 break;
+
+            case "kelola-penginapan":
+                gotoLoginIfNotLoggedIn();
+                switch ($_GET["a1"])
+                {
+                    case "data-penginapan":
+                        require "admin/page/kelola-penginapan/data-penginapan.php";
+                    break;
+
+                    case "tambah-penginapan":
+                        require "admin/page/kelola-penginapan/tambah-penginapan.php";
+                    break;
+
+                    case "edit-penginapan":
+                        require "admin/page/kelola-penginapan/edit-penginapan.php";
+                    break;
+                }
+            break;
+
+            case "kelola-kamar":
+                gotoLoginIfNotLoggedIn();
+                switch ($_GET["a1"])
+                {
+                    case "data-kamar":
+                        require "admin/page/kelola-kamar/data-kamar.php";
+                    break;
+
+                    case "tambah-kamar":
+                        require "admin/page/kelola-kamar/tambah-kamar.php";
+                    break;
+
+                    case "edit-kamar":
+                        require "admin/page/kelola-kamar/edit-kamar.php";
+                    break;
+                }
+            break;
         }
     }
 
-    if (isset($_GET["process"])) {
+    if (isset($_GET["process"])) { // mengambil data process dari setiap halaman yang akan diakses
         switch ($_GET["process"]) {
             case "login":
                 require "auth/process/login.php";
-                break;
+            break;
+
             case "login-admin":
                 require "auth/process/login-admin.php";
-                break;
+            break;
+
             case "register":
                 require "auth/process/register.php";
-                break;
+            break;
+
             case "logout":
                 require "auth/process/logout.php";
-                break;
+            break;
+
             case "editprofil":
                 require "user/process/editprofil.php";
-                break;
+            break;
+
+            case "tambah-wisata":
+                require "admin/process/kelola-wisata/tambah-wisata.php"; 
+            break;
+
+            case "delete-wisata":
+                require "admin/process/kelola-wisata/delete-wisata.php"; 
+            break;
+
+            case "edit-wisata":
+                require "admin/process/kelola-wisata/edit-wisata.php"; 
+            break;
+
+            case "tambah-penginapan":
+                require "admin/process/kelola-penginapan/tambah-penginapan.php"; 
+            break;
+
+            case "delete-penginapan":
+                require "admin/process/kelola-penginapan/delete-penginapan.php"; 
+            break;
+
+            case "edit-penginapan":
+                require "admin/process/kelola-penginapan/edit-penginapan.php"; 
+            break;
+
+            case "tambah-kamar":
+                require "admin/process/kelola-kamar/tambah-kamar.php"; 
+            break;
+
+            case "delete-kamar":
+                require "admin/process/kelola-kamar/delete-kamar.php"; 
+            break;
+
+            case "edit-kamar":
+                require "admin/process/kelola-kamar/edit-kamar.php"; 
+            break;
         }
     }
     ?>

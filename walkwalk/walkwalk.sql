@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS `admin` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
--- Dumping data for table walkwalk.admin: ~1 rows (approximately)
+-- Dumping data for table walkwalk.admin: ~0 rows (approximately)
 /*!40000 ALTER TABLE `admin` DISABLE KEYS */;
 INSERT INTO `admin` (`id`, `username`, `password`) VALUES
 	(1, 'admin', 'admin');
@@ -42,9 +42,9 @@ CREATE TABLE IF NOT EXISTS `bookhotel` (
 -- Dumping structure for table walkwalk.kamar
 CREATE TABLE IF NOT EXISTS `kamar` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `PenginapanID` int(11) NOT NULL,
-  `NoKamar` int(11) NOT NULL,
-  `Harga` int(11) NOT NULL,
+  `penginapan_id` int(11) NOT NULL,
+  `no_kamar` int(11) NOT NULL,
+  `harga` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -92,7 +92,7 @@ CREATE TABLE IF NOT EXISTS `penginapan` (
 CREATE TABLE IF NOT EXISTS `tempat_wisata` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nama_tempat` varchar(255) DEFAULT NULL,
-  `alamat` int(11) DEFAULT NULL,
+  `alamat` varchar(255) DEFAULT NULL,
   `harga` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;

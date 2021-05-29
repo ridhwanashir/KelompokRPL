@@ -1,11 +1,16 @@
 <?php
 
-$r = $db->loginWithEmail($_POST["email"], $_POST["password"]);
-$r = $r->get_result();
-if ($r->num_rows > 0) {
-    $_SESSION["id"] = $r->fetch_assoc()["id"];
+$user = new User($conn);
+$user->email = $_POST["email"];
+$user->password = $_POST["password"];
+$r = $user->loginWithEmail();
+
+if ($r["status"] == "success")
+{
+    $_SESSION["id"] = $user->id;
     $_SESSION["role"] = "user";
     header("Location: ?page=home");
-} else {
-    header("Location: ?page=login&status=0");
+    exit;
 }
+
+header("Location: ?page=login&status=0");

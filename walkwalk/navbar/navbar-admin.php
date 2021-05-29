@@ -7,13 +7,16 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active " aria-current="page" href="?page=home">Home</a>
+                    <a class="nav-link <?php echo $_GET["page"] == "home" ? "active":""; ?> " aria-current="page" href="?page=home">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link " aria-current="page" href="?page=home">Kelola Tempat Wisaya</a>
+                    <a class="nav-link <?php echo $_GET["page"] == "kelola-wisata" ? "active":""; ?>" aria-current="page" href="?page=kelola-wisata&a1=data-wisata">Kelola Tempat Wisata</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link " aria-current="page" href="?page=home">Kelola Penginapan</a>
+                    <a class="nav-link <?php echo $_GET["page"] == "kelola-penginapan" ? "active":""; ?>" aria-current="page" href="?page=kelola-penginapan&a1=data-penginapan">Kelola Penginapan</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link <?php echo $_GET["page"] == "kelola-kamar" ? "active":""; ?>" aria-current="page" href="?page=kelola-kamar&a1=data-kamar">Kelola Kamar</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link " aria-current="page" href="?page=home">Bukti Pembayaran</a>
@@ -44,7 +47,7 @@
             <form class="d-flex">
                 <div class="dropdown">
                     <button class="btn btn-success bg-gradient dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                        <?php echo $user["username"]; ?>
+                        <?php echo $admin->username;?>
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                         <li><a class="dropdown-item" href="?process=logout">Log Out</a></li>
