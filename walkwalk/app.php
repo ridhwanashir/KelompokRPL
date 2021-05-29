@@ -1,40 +1,38 @@
 <!DOCTYPE html>
 <html>
-<!-- Pendahuluan : Walkwalk adalah sebuah website traveling, dengan tujuan utama memesan tiket wisata dan penginapan. rujukan DPPL : https://drive.google.com/drive/folders/13Lcfms3R0jNJ-J0TQPAyIMVvjtffnA6N?usp=sharing
 
-file app.php berisi interface untuk setiap halaman  -->
-<!-- menginisiasi head dengan title dan stylesheet -->
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link href="res/css/bootstrap.min.css" rel="stylesheet">
+    <script src="res/js/jquery.min.js"></script>
     <title>WalkWalk</title>
 </head>
 
 <body>
     <?php
-    session_start(); // membuat sesi sesuai role
+    session_start();
 
-    require "connection.php"; 
+    require "connection.php";
     require "classes.php";
     require "functions.php";
 
     $user = null;
     $admin = null;
 
-    $navbarSwitch = [ // menampilkan navbar sesuai role
+    $navbarSwitch = [
         "user"=>"navbar/navbar-user.php",
         "admin"=>"navbar/navbar-admin.php"
     ];
 
-    $homeSwitch = [ // menampilkan homepage sesuai role
+    $homeSwitch = [
         "user"=>"home/page/home-user.php",
         "admin"=>"home/page/home-user.php"
     ];
 
 
-    // Ambil Role 
+    // Ambil Role User
     if (isLoggedIn())
     {
         switch ($_SESSION["role"])
@@ -57,12 +55,12 @@ file app.php berisi interface untuk setiap halaman  -->
     }
 
 
-    // Mengambil Specific Interface Page sesuai request $_GET 
+    // Get Specific Page by $_GET page
     if (isset($_GET["page"])) {
         switch ($_GET["page"]) {
 
             case "home":
-                // Mengambil Specific Home sesuai Session Role
+                // Get Specific Home by Session Role
                 if (isLoggedIn()) {
                     require $homeSwitch[$_SESSION["role"]];
                     break;
@@ -71,7 +69,7 @@ file app.php berisi interface untuk setiap halaman  -->
             break;
 
             case "login":
-                gotoHomeIfLoggedIn(); // mengarahkan ke page home jika sudah login
+                gotoHomeIfLoggedIn();
                 require "auth/page/login.php";
             break;
 
@@ -90,17 +88,19 @@ file app.php berisi interface untuk setiap halaman  -->
             break;
 
             case "editprofil":
-                gotoLoginIfNotLoggedIn(); // mengarahkan ke page login jika belum login
+                gotoLoginIfNotLoggedIn();
                 require "user/page/editprofil.php";
             break;
 
             case "beli-tiket":
                 gotoLoginIfNotLoggedIn();
+                gotoHomeIfAdmin();
                 require "user/page/beli-tiket.php";
             break;
 
             case "pesan-penginapan":
                 gotoLoginIfNotLoggedIn();
+                gotoHomeIfAdmin();
                 require "user/page/pesan-penginapan.php";
             break;
 
@@ -109,7 +109,7 @@ file app.php berisi interface untuk setiap halaman  -->
                 switch ($_GET["a1"])
                 {
                     case "data-wisata":
-                        require "admin/page/kelola-wisata/data-wisata.php"; // membutuhkan akses page admin
+                        require "admin/page/kelola-wisata/data-wisata.php";
                     break;
 
                     case "tambah-wisata":
@@ -157,10 +157,54 @@ file app.php berisi interface untuk setiap halaman  -->
                     break;
                 }
             break;
+
+            case "bayar":
+                gotoLoginIfNotLoggedIn();
+                require "user/page/bayar.php";
+            break;
+
+            case "kirim-bukti-pembayaran":
+                gotoLoginIfNotLoggedIn();
+                require "user/page/kirim-bukti-pembayaran.php";
+            break;
+
+            case "kirim-foto-bukti":
+                require "user/page/kirim-foto-bukti.php";
+            break;
+
+            case "bukti-pembayaran":
+                require "admin/page/bukti-pembayaran/data-bukti.php";
+            break;
+
+            case "transaksi-user":
+                require "user/page/transaksi.php";
+            break;
+
+            case "kelola-metode-pembayaran":
+                gotoLoginIfNotLoggedIn();
+                switch ($_GET["a1"])
+                {
+                    case "data-metode":
+                        require "admin/page/kelola-metode-pembayaran/data-metode.php";
+                    break;
+
+                    case "tambah-metode":
+                        require "admin/page/kelola-metode-pembayaran/tambah-metode.php";
+                    break;
+
+                    case "edit-metode":
+                        require "admin/page/kelola-metode-pembayaran/edit-metode.php";
+                    break;
+                }
+            break;
+
+            default:
+                require "public/404.php";
+            break;
         }
     }
 
-    if (isset($_GET["process"])) { // mengambil data process dari setiap halaman yang akan diakses
+    if (isset($_GET["process"])) {
         switch ($_GET["process"]) {
             case "login":
                 require "auth/process/login.php";
@@ -217,10 +261,45 @@ file app.php berisi interface untuk setiap halaman  -->
             case "edit-kamar":
                 require "admin/process/kelola-kamar/edit-kamar.php"; 
             break;
+
+            case "beli-tiket":
+                require "user/process/beli-tiket.php"; 
+            break;
+
+            case "pesan-penginapan":
+                require "user/process/pesan-penginapan.php"; 
+            break;
+
+            case "batal-pembayaran":
+                require "user/process/batal-pembayaran.php";
+            break;
+
+            case "kirim-foto-bukti":
+                require "user/process/kirim-foto-bukti.php";
+            break;
+
+            case "terima-bukti-pembayaran":
+                require "admin/process/bukti-pembayaran/terima-bukti-pembayaran.php";
+            break;
+
+            case "tolak-bukti-pembayaran":
+                require "admin/process/bukti-pembayaran/tolak-bukti-pembayaran.php";
+            break;
+
+            case "delete-metode":
+                require "admin/process/kelola-metode-pembayaran/delete-metode.php";
+            break;
+
+            case "tambah-metode":
+                require "admin/process/kelola-metode-pembayaran/tambah-metode.php";
+            break;
+
+            case "edit-metode":
+                require "admin/process/kelola-metode-pembayaran/edit-metode.php";
+            break;
         }
     }
     ?>
-
     <script src="res/js/bootstrap.bundle.js"></script>
 </body>
 
