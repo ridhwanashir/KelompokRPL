@@ -19,10 +19,10 @@
                     <a class="nav-link <?php echo $_GET["page"] == "kelola-kamar" ? "active":""; ?>" aria-current="page" href="?page=kelola-kamar&a1=data-kamar">Kelola Kamar</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link " aria-current="page" href="?page=home">Bukti Pembayaran</a>
+                    <a class="nav-link <?php echo $_GET["page"] == "bukti-pembayaran" ? "active":""; ?> " aria-current="page" href="?page=bukti-pembayaran">Bukti Pembayaran</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link " aria-current="page" href="?page=home">Metode Pembayaran</a>
+                    <a class="nav-link <?php echo $_GET["page"] == "kelola-metode-pembayaran" ? "active":""; ?> " aria-current="page" href="?page=kelola-metode-pembayaran&a1=data-metode">Metode Pembayaran</a>
                 </li>
                 <!-- <li class="nav-item">
                         <a class="nav-link" href="#">Link</a>

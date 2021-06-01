@@ -7,7 +7,16 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active " aria-current="page" href="?page=home">Home</a>
+                    <a class="nav-link <?php echo $_GET["page"] == "home" ? "active":""; ?>  " aria-current="page" href="?page=home">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link <?php echo $_GET["page"] == "search" ? "active":""; ?>  " aria-current="page" href="?page=search&keyword=">Cari</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link <?php echo $_GET["page"] == "kirim-bukti-pembayaran" ? "active":""; ?>  " aria-current="page" href="?page=kirim-bukti-pembayaran">Kirim Bukti Pembayaran</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link <?php echo $_GET["page"] == "transaksi-user" ? "active":""; ?>  " aria-current="page" href="?page=transaksi-user">Transaksi</a>
                 </li>
                 <!-- <li class="nav-item">
                         <a class="nav-link" href="#">Link</a>
