@@ -2,6 +2,11 @@
     <div class='text-center'>
         <h1>Login</h1>
     </div>
+
+    <?php
+    alertError("container");
+    ?>
+
     <form class="container" action="?process=login" method="post">
         <div class="mb-3">
             <label for="exampleInputEmail1" class="form-label">Email address</label>
