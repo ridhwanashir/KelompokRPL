@@ -1,5 +1,5 @@
 <?php
-// connection.php berfungsi menyambungkan koneksi ke database
+
 $conn = new mysqli("localhost", "root", "", "walkwalk");
 
 

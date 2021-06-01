@@ -1,6 +1,6 @@
 <?php
-// classes.php berisi kelas-kelas
-class QueryPrepare // membangun koneksi database dan sql untuk menjalankan query
+
+class QueryPrepare
 {
     public $conn;
 
@@ -17,32 +17,32 @@ class QueryPrepare // membangun koneksi database dan sql untuk menjalankan query
     }
 }
 
-class Admin extends QueryPrepare // kelas admin
+class Admin extends QueryPrepare
 {
     public $id,$username,$password;
 
-    function syncAssoc($data) // sinkronisasi data 
+    function syncAssoc($data)
     {
         $this->id = $data["id"];
         $this->username = $data["username"];
         $this->password = $data["password"];
     }
     
-    function getDataByID($id) // mengambil data dari database berdasarkan id
+    function getDataByID($id)
     {
         $q = $this->prepare(
             "SELECT * FROM admin WHERE id = ?",
             "i",
             $id
         );
-        $q->execute(); // execute query
-        $res = $q->get_result(); // menyimpan hasil query
+        $q->execute();
+        $res = $q->get_result();
         $data = $res->fetch_assoc();
         $this->syncAssoc($data);
         return $data;
     }
 
-    function loginAdmin() // fungsi login admin
+    function loginAdmin()
     {
         $q = $this->prepare(
             "SELECT * FROM admin WHERE username = ? AND password = ?",
@@ -81,6 +81,19 @@ class User extends QueryPrepare
         $this->address = $data["address"];
         $this->phone = $data["phone"];
     }
+
+    function checkUsernameExist($username)
+    {
+        $q = $this->prepare(
+            "SELECT * FROM user WHERE name = ?",
+            "s",
+            $username
+        );
+        $q->execute();
+        $r = $q->get_result();
+        $data = $r->fetch_assoc();
+        return ($data != null) ? true:false;
+    }
     
     function getDataByID($id)
     {
@@ -96,7 +109,7 @@ class User extends QueryPrepare
         return $data;
     }
 
-    function editUser() // fungsi edit data pribadi user
+    function editUser()
     {
         $q = $this->prepare(
             "UPDATE user SET name=?,email=?,password=?,address=?,phone=? WHERE id = ?",
@@ -108,7 +121,7 @@ class User extends QueryPrepare
         return $q;
     }
 
-    function registerUser() // fungsi register user
+    function registerUser()
     {
         $q = $this->prepare(
             "INSERT INTO user (name,email,password,address,phone) VALUES (?,?,?,?,?)",
@@ -121,7 +134,7 @@ class User extends QueryPrepare
         return $q;
     }
 
-    function loginWithEmail() // fungsi login user
+    function loginWithEmail()
     {
         $q = $this->prepare(
             "SELECT * FROM user WHERE email = ? AND password = ?",
@@ -148,7 +161,7 @@ class User extends QueryPrepare
     }
 }
 
-class TempatWisata extends QueryPrepare 
+class TempatWisata extends QueryPrepare
 {
     public $id,$nama_tempat,$alamat,$harga;
 
@@ -158,6 +171,7 @@ class TempatWisata extends QueryPrepare
         $this->nama_tempat = $data["nama_tempat"];
         $this->alamat = $data["alamat"];
         $this->harga = $data["harga"];
+        $this->foto = $data["foto"];
     }
 
     function getDataByID($id)
@@ -174,14 +188,15 @@ class TempatWisata extends QueryPrepare
         return $data;
     }
 
-    function add() // menambahkan tempatwisata
+    function add()
     {
         $q = $this->prepare(
-            "INSERT INTO tempat_wisata (nama_tempat,alamat,harga) VALUES (?,?,?)",
-            "ssi",
+            "INSERT INTO tempat_wisata (nama_tempat,alamat,harga,foto) VALUES (?,?,?,?)",
+            "ssis",
             $this->nama_tempat,
             $this->alamat,
-            $this->harga
+            $this->harga,
+            $this->foto
         );
         $q->execute();
         $res = $q->get_result();
@@ -189,17 +204,17 @@ class TempatWisata extends QueryPrepare
         return $q;
     }
 
-    function edit() // edit tempatwisata
+    function edit()
     {
         $q = $this->prepare(
-            "UPDATE tempat_wisata SET nama_tempat = ?, alamat = ?, harga = ? WHERE id = ?",
-            "ssii",
-            $this->nama_tempat,$this->alamat,$this->harga,$this->id
+            "UPDATE tempat_wisata SET nama_tempat = ?, alamat = ?, harga = ?, foto = ? WHERE id = ?",
+            "ssisi",
+            $this->nama_tempat,$this->alamat,$this->harga,$this->foto,$this->id
         );
         $q->execute();
     }
 
-    function delete() // delete tempatwisata
+    function delete()
     {
         $q = $this->prepare(
             "DELETE FROM tempat_wisata WHERE id = ?",
@@ -209,7 +224,7 @@ class TempatWisata extends QueryPrepare
         $q->execute();
     }
 
-    function getAll() // mengambil data tempatwisata
+    function getAll()
     {
         $data = $this->conn->query("SELECT * FROM tempat_wisata");
         $r = [];
@@ -220,12 +235,30 @@ class TempatWisata extends QueryPrepare
             $dd->nama_tempat = $d["nama_tempat"];
             $dd->alamat = $d["alamat"];
             $dd->harga = $d["harga"];
+            $dd->foto = $d["foto"];
+            array_push($r,$dd);
+        }
+        return $r;
+    }
+    
+    function getRandom($limit = 3)
+    {
+        $data = $this->conn->query("SELECT * FROM tempat_wisata ORDER BY RAND() LIMIT $limit");
+        $r = [];
+        foreach ($data as $d)
+        {
+            $dd = new TempatWisata($this->conn);
+            $dd->id = $d["id"];
+            $dd->nama_tempat = $d["nama_tempat"];
+            $dd->alamat = $d["alamat"];
+            $dd->harga = $d["harga"];
+            $dd->foto = $d["foto"];
             array_push($r,$dd);
         }
         return $r;
     }
 
-    function searchAlamat($alamat) // mencari alamat tempatwisata
+    function searchAlamat($alamat)
     {
         $q = $this->prepare(
             "SELECT * FROM tempat_wisata WHERE alamat LIKE ?",
@@ -237,7 +270,7 @@ class TempatWisata extends QueryPrepare
         return $r;
     }
 
-    function searchNamaTempat($nama_tempat) // mencari nama tempatwisata
+    function searchNamaTempat($nama_tempat)
     {
         $q = $this->prepare(
             "SELECT * FROM tempat_wisata WHERE nama_tempat LIKE ?",
@@ -260,6 +293,7 @@ class Penginapan extends QueryPrepare
         $this->id = $data["id"];
         $this->nama_tempat = $data["nama_tempat"];
         $this->alamat = $data["alamat"];
+        $this->foto = $data["foto"];
     }
 
     function getDataByID($id)
@@ -279,10 +313,11 @@ class Penginapan extends QueryPrepare
     function add()
     {
         $q = $this->prepare(
-            "INSERT INTO penginapan (nama_tempat,alamat) VALUES (?,?)",
-            "ss",
+            "INSERT INTO penginapan (nama_tempat,alamat,foto) VALUES (?,?,?)",
+            "sss",
             $this->nama_tempat,
-            $this->alamat
+            $this->alamat,
+            $this->foto
         );
         $q->execute();
         $res = $q->get_result();
@@ -293,9 +328,9 @@ class Penginapan extends QueryPrepare
     function edit()
     {
         $q = $this->prepare(
-            "UPDATE penginapan SET nama_tempat = ?, alamat = ? WHERE id = ?",
-            "ssi",
-            $this->nama_tempat,$this->alamat,$this->id
+            "UPDATE penginapan SET nama_tempat = ?, alamat = ?, foto = ? WHERE id = ?",
+            "sssi",
+            $this->nama_tempat,$this->alamat,$this->foto,$this->id
         );
         $q->execute();
     }
@@ -320,6 +355,23 @@ class Penginapan extends QueryPrepare
             $dd->id = $d["id"];
             $dd->nama_tempat = $d["nama_tempat"];
             $dd->alamat = $d["alamat"];
+            $dd->foto = $d["foto"];
+            array_push($r,$dd);
+        }
+        return $r;
+    }
+
+    function getRandom($limit = 3)
+    {
+        $data = $this->conn->query("SELECT * FROM penginapan ORDER BY RAND() LIMIT $limit");
+        $r = [];
+        foreach ($data as $d)
+        {
+            $dd = new Penginapan($this->conn);
+            $dd->id = $d["id"];
+            $dd->nama_tempat = $d["nama_tempat"];
+            $dd->alamat = $d["alamat"];
+            $dd->foto = $d["foto"];
             array_push($r,$dd);
         }
         return $r;
@@ -419,15 +471,16 @@ class Kamar extends QueryPrepare
     }
 }
 
-class MetodePembayaran extends QueryPrepare 
+class MetodePembayaran extends QueryPrepare
 {
-    public $id,$nama,$no_rek;
+    public $id,$nama,$no_rek,$atas_nama;
 
     function syncAssoc($data)
     {
         $this->id = $data["id"];
         $this->nama = $data["nama"];
         $this->no_rek = $data["no_rek"];
+        $this->atas_nama = $data["atas_nama"];
     }
 
     function getDataByID($id)
@@ -447,24 +500,26 @@ class MetodePembayaran extends QueryPrepare
     function add()
     {
         $q = $this->prepare(
-            "INSERT INTO metode_pembayaran (nama,no_rek) VALUES (?,?)",
-            "ss",
+            "INSERT INTO metode_pembayaran (nama,no_rek,atas_nama) VALUES (?,?,?)",
+            "sss",
             $this->nama,
-            $this->no_rek
+            $this->no_rek,
+            $this->atas_nama
         );
         $q->execute();
         $res = $q->get_result();
-        $this->getDataByID($res->insert_id);
+        $this->getDataByID($q->insert_id);
         return $q;
     }
 
     function edit()
     {
         $q = $this->prepare(
-            "UPDATE metode_pembayaran SET nama = ?, no_rek = ? WHERE id = ?",
-            "ssi",
+            "UPDATE metode_pembayaran SET nama = ?, no_rek = ?, atas_nama = ? WHERE id = ?",
+            "sssi",
             $this->nama,
             $this->no_rek,
+            $this->atas_nama,
             $this->id
         );
         $q->execute();
@@ -489,7 +544,307 @@ class MetodePembayaran extends QueryPrepare
             $dd = new MetodePembayaran($this->conn);
             $dd->id = $d["id"];
             $dd->nama = $d["nama"];
+            $dd->atas_nama = $d["atas_nama"];
             $dd->no_rek = $d["no_rek"];
+            array_push($r,$dd);
+        }
+        return $r;
+    }
+}
+
+class TiketWisata extends QueryPrepare
+{
+    public $id,$user_id,$wisata_id,$total_tiket,$total_harga;
+
+    function syncAssoc($data)
+    {
+        $this->id = $data["id"];
+        $this->user_id = $data["user_id"];
+        $this->wisata_id = $data["wisata_id"];
+        $this->total_tiket = $data["total_tiket"];
+        $this->total_harga = $data["total_harga"];
+    }
+
+    function getDataByID($id)
+    {
+        $q = $this->prepare(
+            "SELECT * FROM tiketwisata WHERE id = ?",
+            "i",
+            $id
+        );
+        $q->execute();
+        $res = $q->get_result();
+        $data = $res->fetch_assoc();
+        $this->syncAssoc($data);
+        return $data;
+    }
+
+    function add()
+    {
+        $q = $this->prepare(
+            "INSERT INTO tiketwisata (user_id,wisata_id,total_tiket,total_harga) VALUES (?,?,?,?)",
+            "iiii",
+            $this->user_id,
+            $this->wisata_id,
+            $this->total_tiket,
+            $this->total_harga,
+        );
+        $q->execute();
+        $res = $q->get_result();
+        $this->getDataByID($q->insert_id);
+        return $q;
+    }
+
+    function edit()
+    {
+        $q = $this->prepare(
+            "UPDATE tiketwisata SET user_id = ?, wisata_id = ?, total_tiket = ?, total_harga = ? WHERE id = ?",
+            "iiiii",
+            $this->user_id,
+            $this->wisata_id,
+            $this->total_tiket,
+            $this->total_harga,
+            $this->id
+        );
+        $q->execute();
+    }
+
+    function delete()
+    {
+        $q = $this->prepare(
+            "DELETE FROM tiketwisata WHERE id = ?",
+            "i",
+            $this->id
+        );
+        $q->execute();
+    }
+
+    function getAll()
+    {
+        $data = $this->conn->query("SELECT * FROM tiketwisata");
+        $r = [];
+        foreach ($data as $d)
+        {
+            $dd = new TiketWisata($this->conn);
+            $dd->id = $d["id"];
+            $dd->user_id = $d["user_id"];
+            $dd->wisata_id = $d["wisata_id"];
+            $dd->total_tiket = $d["total_tiket"];
+            $dd->total_harga = $d["total_harga"];
+            array_push($r,$dd);
+        }
+        return $r;
+    }
+}
+
+class StatusPembayaran
+{
+    public static $foto_belum_dikirim = 0;
+    public static $menunggu_approval_admin = 1;
+    public static $pembayaran_berhasil = 2;
+    public static $pembayaran_ditolak = 3;
+}
+
+class Pembayaran extends QueryPrepare
+{
+    public $id,$tiket_id,$book_id,$total_harga,$metode_pembayaran,$status,$foto_bukti;
+    
+    function syncAssoc($data)
+    {
+        $this->id = $data["id"];
+        $this->tiket_id = $data["tiket_id"];
+        $this->book_id = $data["book_id"];
+        $this->total_harga = $data["total_harga"];
+        $this->metode_pembayaran = $data["metode_pembayaran"];
+        $this->status = $data["status"];
+        $this->foto_bukti = $data["foto_bukti"];
+    }
+
+    function getDataByID($id)
+    {
+        $q = $this->prepare(
+            "SELECT * FROM pembayaran WHERE id = ?",
+            "i",
+            $id
+        );
+        $q->execute();
+        $res = $q->get_result();
+        $data = $res->fetch_assoc();
+        $this->syncAssoc($data);
+        return $data;
+    }
+
+    function add()
+    {
+        $q = $this->prepare(
+            "INSERT INTO pembayaran (tiket_id,book_id,total_harga,metode_pembayaran) VALUES (?,?,?,?)",
+            "iiii",
+            $this->tiket_id,
+            $this->book_id,
+            $this->total_harga,
+            $this->metode_pembayaran,
+        );
+        $q->execute();
+        $res = $q->get_result();
+        $this->getDataByID($q->insert_id);
+        return $q;
+    }
+
+    function edit()
+    {
+        $q = $this->prepare(
+            "UPDATE pembayaran SET tiket_id = ?, book_id = ?, total_harga = ?, metode_pembayaran = ?, status = ?, foto_bukti = ? WHERE id = ?",
+            "iiiiisi",
+            $this->tiket_id,
+            $this->book_id,
+            $this->total_harga,
+            $this->metode_pembayaran,
+            $this->status,
+            $this->foto_bukti,
+            $this->id
+        );
+        $q->execute();
+    }
+
+    function delete()
+    {
+        $q = $this->prepare(
+            "DELETE FROM pembayaran WHERE id = ?",
+            "i",
+            $this->id
+        );
+        $q->execute();
+    }
+
+    function getAll()
+    {
+        $data = $this->conn->query("SELECT * FROM pembayaran");
+        $r = [];
+        foreach ($data as $d)
+        {
+            $dd = new TiketWisata($this->conn);
+            $dd->id = $d["id"];
+            $dd->tiket_id = $d["tiket_id"];
+            $dd->book_id = $d["book_id"];
+            $dd->total_harga = $d["total_harga"];
+            $dd->metode_pembayaran = $d["metode_pembayaran"];
+            $dd->status = $d["status"];
+            $dd->foto_bukti = $d["foto_bukti"];
+            array_push($r,$dd);
+        }
+        return $r;
+    }
+
+    function getPembayaranByUserId($user_id)
+    {
+        $data = $this->conn->query("SELECT * FROM pembayaran");
+        $r = [];
+        foreach ($data as $d)
+        {
+            $pemb = new Pembayaran($this->conn);
+            $pemb->getDataByID($d["id"]);
+            if ($pemb->tiket_id)
+            {
+                $tiket = new TiketWisata($this->conn);
+                $tiket->getDataByID($pemb->tiket_id);
+                if ($tiket->user_id == $user_id)
+                {
+                    array_push($r,$pemb);
+                    continue;
+                }
+            }
+            $pp = new PesanPenginapan($this->conn);
+            $pp->getDataByID($pemb->book_id);
+            if ($pp->user_id == $user_id)
+            {
+                array_push($r,$pemb);
+                continue;
+            }
+        }
+
+        return $r;
+    }
+}
+
+class PesanPenginapan extends QueryPrepare
+{
+    public $id, $user_id, $kamar_id, $durasi, $total_harga;
+
+    function syncAssoc($data)
+    {
+        $this->id = $data["id"];
+        $this->user_id = $data["user_id"];
+        $this->kamar_id = $data["kamar_id"];
+        $this->durasi = $data["durasi"];
+        $this->total_harga = $data["total_harga"];
+    }
+
+    function getDataByID($id)
+    {
+        $q = $this->prepare(
+            "SELECT * FROM bookhotel WHERE id = ?",
+            "i",
+            $id
+        );
+        $q->execute();
+        $res = $q->get_result();
+        $data = $res->fetch_assoc();
+        $this->syncAssoc($data);
+        return $data;
+    }
+
+    function add()
+    {
+        $q = $this->prepare(
+            "INSERT INTO bookhotel (user_id,kamar_id,total_harga,durasi) VALUES (?,?,?,?)",
+            "iiii",
+            $this->user_id,
+            $this->kamar_id,
+            $this->total_harga,
+            $this->durasi,
+        );
+        $q->execute();
+        $res = $q->get_result();
+        $this->getDataByID($q->insert_id);
+        return $q;
+    }
+
+    function edit()
+    {
+        $q = $this->prepare(
+            "UPDATE bookhotel SET user_id = ?, kamar_id = ?, total_harga = ?, durasi = ? WHERE id = ?",
+            "iiiii",
+            $this->user_id,
+            $this->kamar_id,
+            $this->total_harga,
+            $this->durasi,
+            $this->id
+        );
+        $q->execute();
+    }
+
+    function delete()
+    {
+        $q = $this->prepare(
+            "DELETE FROM bookhotel WHERE id = ?",
+            "i",
+            $this->id
+        );
+        $q->execute();
+    }
+
+    function getAll()
+    {
+        $data = $this->conn->query("SELECT * FROM bookhotel");
+        $r = [];
+        foreach ($data as $d)
+        {
+            $dd = new TiketWisata($this->conn);
+            $dd->id = $d["id"];
+            $dd->user_id = $d["user_id"];
+            $dd->kamar_id = $d["kamar_id"];
+            $dd->total_harga = $d["total_harga"];
+            $dd->durasi = $d["durasi"];
             array_push($r,$dd);
         }
         return $r;
