@@ -1,4 +1,3 @@
-<!-- menampilkan form data untuk fungsi edit profil -->
 <div class="bg-white p-5">
     <div class='text-center'>
         <h1>Edit Profil</h1>
@@ -24,6 +23,6 @@
             <label for="c" class="form-label">Password (Abaikan jika tidak ingin ganti password)</label>
             <input name="password" type="password" class="form-control" id="c">
         </div>
-        <button type="submit" class="btn btn-success bg-gradient">Simpan</button> <!-- tombol submit data -->
+        <button type="submit" class="btn btn-success bg-gradient">Simpan</button>
     </form>
 </div>
