@@ -17,7 +17,7 @@
         
         <p class="fw-bold">Edit Penginapan</p>
 
-        <form method="post" action="?process=edit-penginapan&id=<?php echo $penginapan->id;?>">
+        <form method="post" enctype="multipart/form-data" action="?process=edit-penginapan&id=<?php echo $penginapan->id;?>">
             <div class="mb-3">
                 <label for="nama_tempat" class="mb-3">Nama Tempat</label>
                 <input value="<?php echo $penginapan->nama_tempat;?>" required name="nama_tempat" class="form-control" id="nama_tempat" type="text">
@@ -25,6 +25,10 @@
             <div class="mb-3">
                 <label for="alamat" class="mb-3">Alamat</label>
                 <input value="<?php echo $penginapan->alamat;?>" required name="alamat" class="form-control" id="alamat" type="text">
+            </div>
+            <div class="mb-3">
+                <label for="foto" class="mb-3">Foto</label>
+                <input name="foto" class="form-control" id="foto" type="file">
             </div>
             <button type="submit" class="btn btn-success">Edit</button>
         </form>

@@ -14,9 +14,7 @@
         
         <p class="fw-bold">Tambah Tempat Wisata</p>
 
-
-
-        <form method="post" action="?process=tambah-wisata">
+        <form method="post" action="?process=tambah-wisata" enctype="multipart/form-data">
             <div class="mb-3">
                 <label for="nama_tempat" class="mb-3">Nama Tempat</label>
                 <input required name="nama_tempat" class="form-control" id="nama_tempat" type="text">
@@ -28,6 +26,10 @@
             <div class="mb-3">
                 <label for="alamat" class="mb-3">Harga</label>
                 <input required name="harga" class="form-control" id="alamat" type="text">
+            </div>
+            <div class="mb-3">
+                <label for="alamat" class="mb-3">Foto</label>
+                <input required name="foto" class="form-control" id="foto" type="file">
             </div>
             <button type="submit" class="btn btn-success">Tambah</button>
         </form>

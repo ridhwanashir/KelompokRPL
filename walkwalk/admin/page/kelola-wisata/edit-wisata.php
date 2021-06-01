@@ -17,7 +17,7 @@
         
         <p class="fw-bold">Edit Tempat Wisata</p>
 
-        <form method="post" action="?process=edit-wisata&id=<?php echo $wisata->id;?>">
+        <form method="post" enctype="multipart/form-data" action="?process=edit-wisata&id=<?php echo $wisata->id;?>">
             <div class="mb-3">
                 <label for="nama_tempat" class="mb-3">Nama Tempat</label>
                 <input value="<?php echo $wisata->nama_tempat;?>" required name="nama_tempat" class="form-control" id="nama_tempat" type="text">
@@ -29,6 +29,10 @@
             <div class="mb-3">
                 <label for="alamat" class="mb-3">Harga</label>
                 <input value="<?php echo $wisata->harga;?>" required name="harga" class="form-control" id="alamat" type="text">
+            </div>
+            <div class="mb-3">
+                <label for="alamat" class="mb-3">Foto</label>
+                <input name="foto" class="form-control" id="foto" type="file">
             </div>
             <button type="submit" class="btn btn-success">Edit</button>
         </form>
