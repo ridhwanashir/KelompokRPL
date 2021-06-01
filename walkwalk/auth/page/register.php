@@ -1,4 +1,9 @@
 <div class="bg-white p-5">
+
+    <?php
+    alertError("container");
+    ?>
+
     <div class='text-center'>
         <h1>Register</h1>
     </div>

@@ -12,5 +12,9 @@ if ($r["status"] == "success")
     header("Location: ?page=home");
     exit;
 }
+else
+{
+    return goBackWith("error","Email/Password salah!");
+}
 
 header("Location: ?page=login&status=0");
