@@ -1,11 +1,10 @@
 <?php
-// search.php adalah interface untuk fungsi pencarian
 if (!isset($_GET["keyword"])) {
     jsRedirect("app?page=home");
     exit;
 }
 
-$keyword = $_GET["keyword"]; // mengambil data keyword
+$keyword = $_GET["keyword"];
 ?>
 
 <div class="bg-white p-5">
@@ -17,13 +16,18 @@ $keyword = $_GET["keyword"]; // mengambil data keyword
     <div class="row">
         <?php
         $wisatasearch = new TempatWisata($conn);
-        $data = $wisatasearch->searchAlamat($keyword); // mencari alamat tempat wisata dari keyword 
-        while ($d = $data->fetch_assoc()) {  // menampilkan data tempat wisata jika ditemukan
+        $data = $wisatasearch->searchAlamat($keyword);
+        while ($d = $data->fetch_assoc()) {
             $wisata = new TempatWisata($conn);
             $wisata->getDataByID($d["id"]);
             echo '<div class="col p-3 d-flex justify-content-center">
             <div class="card" style="width: 22rem;">
                 <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col">
+                            <img src="'."admin/img/foto_wisata/".$wisata->foto.'" width="100%">
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col">
                             <h5 class="card-title">'.$wisata->nama_tempat.'</h5>
@@ -44,13 +48,18 @@ $keyword = $_GET["keyword"]; // mengambil data keyword
     <div class="row">
         <?php
         $penginapan = new Penginapan($conn);
-        $data = $penginapan->searchAlamat($keyword); // mencari alamat penginapan dari keyword 
-        while ($d = $data->fetch_assoc()) {  // menampilkan data penginapan jika ditemukan
+        $data = $penginapan->searchAlamat($keyword);
+        while ($d = $data->fetch_assoc()) {
             $penginapan = new Penginapan($conn);
             $penginapan->getDataByID($d["id"]);
             echo '<div class="col p-3 d-flex justify-content-center">
             <div class="card" style="width: 22rem;">
                 <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col">
+                            <img src="'."admin/img/foto_penginapan/".$penginapan->foto.'" width="100%">
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col">
                             <h5 class="card-title">'.$penginapan->nama_tempat.'</h5>

@@ -1,5 +1,5 @@
 <?php
-// editprofil.php berfungsi untuk menyimpan data baru dari form edit profil user ke variabel user
+
 $user = new User($conn);
 $user->getDataByID($_SESSION["id"]);
 $user->name = $_POST["name"];
