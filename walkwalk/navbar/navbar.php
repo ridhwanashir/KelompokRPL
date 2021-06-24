@@ -30,7 +30,7 @@
                     </li> -->
             </ul>
             <form class="d-flex">
-                <a href="?page=login" class="btn me-2 shadow bg-success text-white bg-gradient">Login</a>
+                <a name="Login" href="?page=login" class="btn me-2 shadow bg-success text-white bg-gradient">Login</a>
                 <a href="?page=register" class="btn me-2 shadow bg-success text-white bg-gradient">Register</a>
             </form>
         </div>
